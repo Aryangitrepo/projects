@@ -1,0 +1,531 @@
+IOT project
+
+brief summary of the project:
+Arduino based CO and fire alert system for home and institue level application:
+This is a simple application of Internet of things where we are using the following componenets
+-Arduino NANO
+-breadboard
+-MQ7 carbon monoxide sensors
+-Fire detection sensor
+-buzzer
+-LED
+
+This uses a basic system where the project works as the hybrid combined version of all these components serving two goals
+Home CO sensor:
+As home stoves sometime face incomplete combustion and releases poisonous gas such as carbon monoxide which is known for causing hallucinations in people and severe neurological problems 
+even to the extent of brain damage.To protect the helath of the people living im the particular house hold we have developed this simple carbon monoxide deteector that warns them when 
+extremely dense amount of carbon monoxide is detected.
+Fire disaster warning system:
+This is the secondary system that the same device can be used for where it detects any unwanted fire in a particular environment including the ddensity of poisonous gasses in that space
+warning people to escape from danger of suffocation.
+  
+
+ 
+
+always connect the sensros in sideways
+
+connect ground to ground analog to analog and vcc to 5v
+buzzer contains two terminals one posivitve and the otheer ground conneect those first 
+
+#testing if the breadboard works or not 
+led test with the arduino nano
+//usb mini is used to connect arduino nano to pc devices 
+ 
+byte ledpin = 13;
+
+void setup() {
+  pinMode(ledpin, OUTPUT); //led variable declaration to the connected pin number 
+}
+
+void loop() {
+  digitalWrite(ledpin, HIGH); // Turn LED on used to dynamically change the mode of the leds 
+  delay(30);                  // Wait 30 ms
+  digitalWrite(ledpin, LOW);  // Turn LED off
+  delay(500);                  // Wait 30 ms
+}
+//working test code for a led test on a arduino wr the led blinks with a delay of 500 milliseconds
+#define buzzer 12
+void setup()
+{
+  pinMode(buzzer, OUTPUT);
+}
+
+void loop()
+{
+  bool num=1;
+  int n=5,i;
+  if(num){
+  for(i=0;i<n;i++){
+  digitalWrite(buzzer, HIGH);
+    delay(500); 
+    digitalWrite(buzzer, LOW);
+  delay(200); 
+  }}
+  
+}
+//a test code to run buzzers this contains a loop that runs the  buzzer for  around n loops 
+//it also cotains a boolean condition checker that uses if statement to check if the given condition is satisfied or not 
+int sensor = A0;
+void setup()
+{
+ Serial.begin(9600);
+ pinMode(3,OUTPUT);
+ pinMode(4,OUTPUT);
+
+}
+void loop()
+{
+int sensorvalues = analogRead(sensor);  //taking dynamically read data from a sensor in the system 
+if(sensorvalues>=900)//checking if the sensor value is more than the threshold for it to activate
+{
+  tone(3,1000);
+  digitalWrite(4,1);
+  delay(200);
+  digitalWrite(4,0);
+  delay(200);
+   }
+   else if (sensorvalues>=850)
+   {
+  digitalWrite(4,1);
+  delay(500);
+  digitalWrite(4,0);
+  delay(500);
+  tone(3,800);
+   }
+   else if (sensorvalues>=750)
+   {
+  digitalWrite(4,1);
+  delay(1000);
+  digitalWrite(4,0);
+  delay(1000);
+    tone(3,500);
+   }
+
+  else
+   {
+   digitalWrite(4,0);
+   noTone(3);
+   }
+  Serial.println(sensorvalues);
+}
+ // a basic gas sensor based detection system using arduino 
+ // Pin assignments
+const int fireSensorPin = 2; // Digital pin connected to the fire sensor output
+const int ledPin = 3;        // Digital pin connected to the LED
+const int buzzerPin = 4;     // Digital pin connected to the buzzer
+
+void setup() {
+  // Initialize pins
+  pinMode(fireSensorPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
+
+  // Start serial communication for debugging (optional)
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Read the fire sensor value
+  int fireDetected = digitalRead(fireSensorPin);
+
+  if (fireDetected == HIGH) {
+    // Fire detected: turn on LED and buzzer
+    digitalWrite(ledPin, HIGH);
+    digitalWrite(buzzerPin, HIGH);
+    Serial.println("Fire detected! Activating alarm.");
+  } else {
+    // No fire detected: turn off LED and buzzer
+    digitalWrite(ledPin, LOW);
+    digitalWrite(buzzerPin, LOW);
+    Serial.println("No fire detected.");
+  }
+
+  // Wait for a short period before checking again
+  delay(500);
+}
+//a code for fire detection on arduino using fire sensor
+
+ final combined code for the project
+ 
+ // Pin assignments
+const int ledPin = 13;        // LED test pin
+const int buzzer = 12;        // Buzzer test pin
+const int gasSensor = A0;     // Analog pin connected to the gas sensor
+const int fireSensorPin = 2;  // Digital pin connected to the fire sensor
+const int fireLedPin = 3;     // LED for fire detection
+const int fireBuzzerPin = 4;  // Buzzer for fire detection
+
+void setup() {
+  // Initialize pins
+  pinMode(ledPin, OUTPUT);      // LED test
+  pinMode(buzzer, OUTPUT);      // Buzzer test
+  pinMode(gasSensor, INPUT);    // Gas sensor
+  pinMode(fireSensorPin, INPUT); // Fire sensor
+  pinMode(fireLedPin, OUTPUT);  // Fire LED
+  pinMode(fireBuzzerPin, OUTPUT); // Fire buzzer
+
+  // Start serial communication for debugging
+  Serial.begin(9600);
+}
+
+void loop() {
+  // =======================
+  // 1. LED Test
+  // =======================
+  digitalWrite(ledPin, HIGH); // Turn LED on
+  delay(30);                  // Wait 30 ms
+  digitalWrite(ledPin, LOW);  // Turn LED off
+  delay(500);                 // Blink LED with a 500ms delay
+
+  // =======================
+  // 2. Buzzer Test
+  // =======================
+  bool testCondition = true; // Boolean condition for buzzer test
+  int n = 5;                 // Number of buzzer loops
+  if (testCondition) {
+    for (int i = 0; i < n; i++) {
+      digitalWrite(buzzer, HIGH); // Buzzer ON
+      delay(500);                 // 500ms ON
+      digitalWrite(buzzer, LOW);  // Buzzer OFF
+      delay(200);                 // 200ms OFF
+    }
+  }
+
+  // =======================
+  // 3. Gas Sensor Detection
+  // =======================
+  int gasSensorValue = analogRead(gasSensor); // Read gas sensor value dynamically
+  if (gasSensorValue >= 900) { // High threshold
+    tone(3, 1000);             // Buzzer frequency 1000Hz
+    digitalWrite(4, HIGH);     // Turn LED ON
+    delay(200);
+    digitalWrite(4, LOW);      // Turn LED OFF
+    delay(200);
+  } else if (gasSensorValue >= 850) { // Medium threshold
+    digitalWrite(4, HIGH);     // Turn LED ON
+    delay(500);
+    digitalWrite(4, LOW);      // Turn LED OFF
+    delay(500);
+    tone(3, 800);              // Buzzer frequency 800Hz
+  } else if (gasSensorValue >= 750) { // Low threshold
+    digitalWrite(4, HIGH);     // Turn LED ON
+    delay(1000);
+    digitalWrite(4, LOW);      // Turn LED OFF
+    delay(1000);
+    tone(3, 500);              // Buzzer frequency 500Hz
+  } else { // No gas detected
+    digitalWrite(4, LOW);      // Turn LED OFF
+    noTone(3);                 // Turn buzzer OFF
+  }
+  Serial.print("Gas Sensor Value: ");
+  Serial.println(gasSensorValue);  // Print gas sensor value to serial monitor
+
+  // =======================
+  // 4. Fire Sensor Detection
+  // =======================
+  int fireDetected = digitalRead(fireSensorPin); // Read fire sensor value
+  if (fireDetected == HIGH) {
+    // Fire detected: turn on LED and buzzer
+    digitalWrite(fireLedPin, HIGH);
+    digitalWrite(fireBuzzerPin, HIGH);
+    Serial.println("Fire detected! Activating alarm.");
+  } else {
+    // No fire detected: turn off LED and buzzer
+    digitalWrite(fireLedPin, LOW);
+    digitalWrite(fireBuzzerPin, LOW);
+    Serial.println("No fire detected.");
+  }
+
+  // Short delay before the next loop iteration
+  delay(500);
+}
+
+//fire sensor working code
+// Flame detection with buzzer feedback
+
+// Sensor range
+const int sensorMin = 0;      // Minimum analog reading
+const int sensorMax = 1024;   // Maximum analog reading
+
+const int buzzerPin = 8;      // Buzzer connected to pin 8
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(buzzerPin, OUTPUT);
+}
+
+void loop() {
+ //working code for gas sensor detectionconst int AOUTpin = A0;   // CO sensor analog output to A0
+const int DOUTpin = 8;    // CO sensor digital output to D8
+const int ledPin = 13;    // LED to pin D13
+const int buzzerPin = 7;  // Buzzer connected to pin D7
+
+int limit;
+int value;
+
+void setup() {
+  Serial.begin(115200);          // Set baud rate for Serial Monitor
+  pinMode(DOUTpin, INPUT);       // CO sensor digital pin
+  pinMode(ledPin, OUTPUT);       // LED output
+  pinMode(buzzerPin, OUTPUT);    // Buzzer output
+}
+
+void loop() {
+  value = analogRead(AOUTpin);   // Read analog value from CO sensor
+  limit = digitalRead(DOUTpin);  // Read digital alert level
+
+  Serial.print("CO value: ");
+  Serial.println(value);
+  Serial.print("Limit: ");
+  Serial.println(limit);
+
+  if (limit == HIGH) {
+    digitalWrite(ledPin, HIGH);   // Turn on LED
+    tone(buzzerPin, 1000);        // Turn on buzzer (1 kHz)
+    delay(200);                   // Beep duration
+    noTone(buzzerPin);            // Turn off buzzer
+    delay(200);                   // Pause before next beep
+  } else {
+    digitalWrite(ledPin, LOW);    // Turn off LED
+    noTone(buzzerPin);            // Ensure buzzer is off
+    delay(200);                   // Still add a small delay
+  }
+}
+ int sensorReading = analogRead(A0);
+
+  // Map the sensor value to range 0–3
+  int range = map(sensorReading, sensorMin, sensorMax, 0, 3);
+
+  // Handle flame detection and buzzer control
+  switch (range) {
+    case 0: // Close fire
+      Serial.println("** Close Fire **");
+      tone(buzzerPin, 1000, 200);  // Beep at 1kHz for 200 ms
+      delay(200);
+      break;
+
+    case 1: // Distant fire
+      Serial.println("** Distant Fire **");
+      tone(buzzerPin, 800, 200);   // Beep at 800 Hz for 200 ms
+      delay(200);
+      break;
+
+    case 2: // No fire
+      Serial.println("No Fire");
+      noTone(buzzerPin);
+      delay(500);
+      break;
+
+    default:
+      noTone(buzzerPin);
+      break;
+  }
+
+  delay(100);  // Short delay between loops
+}
+//working code for gas sensor detectionconst int AOUTpin = A0;   // CO sensor analog output to A0
+const int DOUTpin = 8;    // CO sensor digital output to D8
+const int ledPin = 13;    // LED to pin D13
+const int buzzerPin = 7;  // Buzzer connected to pin D7
+
+int limit;
+int value;
+
+void setup() {
+  Serial.begin(115200);          // Set baud rate for Serial Monitor
+  pinMode(DOUTpin, INPUT);       // CO sensor digital pin
+  pinMode(ledPin, OUTPUT);       // LED output
+  pinMode(buzzerPin, OUTPUT);    // Buzzer output
+}
+
+void loop() {
+  value = analogRead(AOUTpin);   // Read analog value from CO sensor
+  limit = digitalRead(DOUTpin);  // Read digital alert level
+
+  Serial.print("CO value: ");
+  Serial.println(value);
+  Serial.print("Limit: ");
+  Serial.println(limit);
+
+  if (limit == HIGH) {
+    digitalWrite(ledPin, HIGH);   // Turn on LED
+    tone(buzzerPin, 1000);        // Turn on buzzer (1 kHz)
+    delay(200);                   // Beep duration
+    noTone(buzzerPin);            // Turn off buzzer
+    delay(200);                   // Pause before next beep
+  } else {
+    digitalWrite(ledPin, LOW);    // Turn off LED
+    noTone(buzzerPin);            // Ensure buzzer is off
+    delay(200);                   // Still add a small delay
+  }
+}
+//working code for buildinq co detector
+const int AOUTpin = A0;   // CO sensor analog output to A0
+const int DOUTpin = 8;    // CO sensor digital output to D8
+const int ledPin = 13;    // LED to pin D13
+const int buzzerPin = 7;  // Buzzer connected to pin D7
+
+int limit;
+int value;
+
+void setup() {
+  Serial.begin(115200);          // Set baud rate for Serial Monitor
+  pinMode(DOUTpin, INPUT);       // CO sensor digital pin
+  pinMode(ledPin, OUTPUT);       // LED output
+  pinMode(buzzerPin, OUTPUT);    // Buzzer output
+}
+
+void loop() {
+  value = analogRead(AOUTpin);   // Read analog value from CO sensor
+  limit = digitalRead(DOUTpin);  // Read digital alert level
+
+  Serial.print("CO value: ");
+  Serial.println(value);
+  Serial.print("Limit: ");
+  Serial.println(limit);
+
+  if (limit == HIGH) {
+    digitalWrite(ledPin, HIGH);   // Turn on LED
+    tone(buzzerPin, 1000);        // Turn on buzzer (1 kHz)
+    delay(200);                   // Beep duration
+    noTone(buzzerPin);            // Turn off buzzer
+    delay(200);                   // Pause before next beep
+  } else {
+    digitalWrite(ledPin, LOW);    // Turn off LED
+    noTone(buzzerPin);            // Ensure buzzer is off
+    delay(200);                   // Still add a small delay
+  }
+}
+//infrared flame detection
+const int infraredSensorPin = A0; // Use analog pin if needed
+const int buzzerPin = 11;
+const int ledPin = 12;
+
+int sensorThreshold = 500; // Adjust based on sensor readings
+
+void setup() {
+  pinMode(infraredSensorPin, INPUT);
+  pinMode(buzzerPin, OUTPUT);
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int fire = analogRead(infraredSensorPin); // Use analogRead for analog sensors
+
+  if (fire > sensorThreshold) { // Check against threshold
+    Serial.println("Fire detected!");
+    digitalWrite(buzzerPin, HIGH);
+
+    // Non-blocking LED blink
+    static unsigned long previousMillis = 0;
+    static bool ledState = LOW;
+
+    if (millis() - previousMillis >= 30) {
+      previousMillis = millis();
+      ledState = !ledState;
+      digitalWrite(ledPin, ledState);
+    }
+  } else {
+    digitalWrite(buzzerPin, LOW);
+    digitalWrite(ledPin, LOW);
+  }
+}
+//final combined code
+
+
+
+#include <MQ7.h>  // For MQ-7 CO Sensor
+
+// Pins
+const int CO_SENSOR_PIN = A0;
+const int FLAME_SENSOR_PIN = A1;
+const int BUZZER_PIN = 11;
+const int RED_LED_PIN = 12;    // For fire alerts
+const int YELLOW_LED_PIN = 10; // For CO alerts
+
+// Thresholds (adjust based on calibration)
+const int CO_THRESHOLD = 200;    // ppm (MQ-7 typical range: 10-1000ppm)
+const int FLAME_THRESHOLD = 500; // Analog reading (0-1023)
+
+// Timing variables
+unsigned long previousCOCheck = 0;
+const long CO_CHECK_INTERVAL = 900000; // Check CO every 15 mins (900,000ms)
+unsigned long previousBlink = 0;
+const int BLINK_INTERVAL = 300; // LED blink speed
+
+// State variables
+bool coAlertActive = false;
+bool fireAlertActive = false;
+bool ledState = LOW;
+
+MQ7 mq7(CO_SENSOR_PIN, 5.0); // 5.0V calibration
+
+void setup() {
+  pinMode(FLAME_SENSOR_PIN, INPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
+  pinMode(RED_LED_PIN, OUTPUT);
+  pinMode(YELLOW_LED_PIN, OUTPUT);
+  
+  Serial.begin(9600);
+  Serial.println("Dual Hazard Detection System Ready");
+}
+
+void loop() {
+  unsigned long currentMillis = millis();
+  
+  // 1. Check for fire (continuous monitoring)
+  int flameValue = analogRead(FLAME_SENSOR_PIN);
+  if (flameValue > FLAME_THRESHOLD) {
+    handleFireDetection(currentMillis);
+  } else {
+    fireAlertActive = false;
+  }
+
+  // 2. Check CO levels (periodic checks)
+  if (currentMillis - previousCOCheck >= CO_CHECK_INTERVAL) {
+    previousCOCheck = currentMillis;
+    float coPPM = mq7.getPPM();
+    Serial.print("CO Level: ");
+    Serial.print(coPPM);
+    Serial.println(" ppm");
+    
+    if (coPPM > CO_THRESHOLD) {
+      coAlertActive = true;
+    } else {
+      coAlertActive = false;
+    }
+  }
+
+  // 3. Handle alerts
+  if (fireAlertActive) {
+    // Priority: Fire over CO
+    digitalWrite(BUZZER_PIN, HIGH);
+    blinkLED(RED_LED_PIN, currentMillis);
+    digitalWrite(YELLOW_LED_PIN, LOW);
+  } 
+  else if (coAlertActive) {
+    digitalWrite(BUZZER_PIN, HIGH);
+    blinkLED(YELLOW_LED_PIN, currentMillis);
+    digitalWrite(RED_LED_PIN, LOW);
+  } 
+  else {
+    digitalWrite(BUZZER_PIN, LOW);
+    digitalWrite(RED_LED_PIN, LOW);
+    digitalWrite(YELLOW_LED_PIN, LOW);
+  }
+}
+
+void handleFireDetection(unsigned long currentTime) {
+  fireAlertActive = true;
+  Serial.print("Fire detected! Sensor value: ");
+  Serial.println(analogRead(FLAME_SENSOR_PIN));
+}
+
+void blinkLED(int ledPin, unsigned long currentTime) {
+  if (currentTime - previousBlink >= BLINK_INTERVAL) {
+    previousBlink = currentTime;
+    ledState = !ledState;
+    digitalWrite(ledPin, ledState);
+  }
+}
