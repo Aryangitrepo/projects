@@ -1,0 +1,14 @@
+1.Building a ml model to detect fake phishing emails:
+need to obtain the dataset that can be used for the process first 
+needs to be as accurate as possible 
+need to contain all new gen modern scams also 
+needs to be simple and lightweight so the app can be used on any platform as required 
+
+method to import a good phishing email dataset:
+from datasets import load_dataset
+dataset = load_dataset("ealvaradob/phishing-dataset", "<desired_dataset>", trust_remote_code=True)
+
+using sklearn to apply the random forest classifier 
+
+step1: Preprocessing the dataset to remove the unwanted discrepencies 
+
